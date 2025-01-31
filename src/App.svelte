@@ -6,7 +6,6 @@
   $effect(async () => {
     const { host } = await browser.storage.local.get("host");
     if (host) {
-      console.log("Changing host because it was found on local storage");
       githubInstanceHost = host;
     }
   });
@@ -87,7 +86,6 @@
   }
 
   async function onHostChange(ev) {
-    console.log("Storing host to local storage", githubInstanceHost);
     await browser.storage.local.set({
       host: githubInstanceHost,
     });
