@@ -12,7 +12,6 @@
   let copiedTimeout;
 
   $effect(async () => {
-    console.log("running $effect");
     const entry = await browser.storage.local.get("enterpriseHosts");
 
     enterpriseHosts = JSON.parse(entry.enterpriseHosts) || [];
