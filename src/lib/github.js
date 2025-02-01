@@ -4,16 +4,23 @@
  *
  * @returns {{org: string, repo: string, pr: string}} result
  */
-export function parseGithubLink(host, link) {
+export function parsePRLink(hosts, link) {
   const result = { org: "", repo: "", pr: "" };
 
-  const baseUrl = `https://${host}/`;
-  if (!link.startsWith(baseUrl)) {
-    throw new Error(`Unknown github / github enterprise host '${host}'`);
+  let ok = false
+  let path;
+  for (const host of hosts) {
+    const baseUrl = `https://${host}/`;
+    if (link.startsWith(baseUrl)) {
+      ok = true;
+      path = link.replace(baseUrl, "").split("/");
+    }
   }
 
-  // Remove the base URL to extract the path
-  const path = link.replace(baseUrl, "").split("/");
+  if (!ok) {
+    throw new Error(`'${link}' has an unrecognized host, maybe it needs to be added?`);
+  }
+
 
   // expected format <org>/<repo>/pull/<pr>
   if (path.length >= 2) {
@@ -35,8 +42,8 @@ export function parseGithubLink(host, link) {
  * @param {string} link
  * @returns {boolean}
  */
-export function isPRLink(host, link) {
-  const pattern = new RegExp(`^https://${host.replace(/\./g, "\\.")}/[^/]+/[^/]+/pull/\\d+`);
+export function isPRLink(link) {
+  const pattern = new RegExp(`^https://.+/[^/]+/[^/]+/pull/\\d+`);
 
   return pattern.test(link);
 }

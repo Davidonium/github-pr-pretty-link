@@ -1,25 +1,31 @@
 <script>
   import browser from "webextension-polyfill";
-  import { parseGithubLink, isPRLink } from "./lib/github";
+  import { isPRLink, parsePRLink } from "./lib/github";
   import Cog from "./lib/icons/Cog.svelte";
   import Close from "./lib/icons/Close.svelte";
+  import Trash from "./lib/icons/Trash.svelte";
 
-  let githubInstanceHost = $state("github.com");
-  let copyDisabled = $state(true);
+  let copyEnabled = $state(false);
   let btnText = $state("Copy");
   let configVisible = $state(false);
+  let enterpriseHosts = $state([]);
   let copiedTimeout;
 
   $effect(async () => {
-    const { host } = await browser.storage.local.get("host");
-    if (host) {
-      githubInstanceHost = host;
-    }
+    console.log("running $effect");
+    const entry = await browser.storage.local.get("enterpriseHosts");
+
+    enterpriseHosts = JSON.parse(entry.enterpriseHosts) || [];
+    console.log(enterpriseHosts.length);
 
     const tab = await activeTab();
     const url = new URL(tab.url);
 
-    copyDisabled = !isPRLink(host, url);
+    const hasPRLink = [{ value: "github.com" }, ...enterpriseHosts].some(
+      (host) => url.hostname === host.value && isPRLink(url),
+    );
+
+    copyEnabled = hasPRLink;
   });
 
   async function copy() {
@@ -39,7 +45,9 @@
     }
 
     const title = result.title;
-    const { org, repo, pr } = parseGithubLink(githubInstanceHost, tab.url);
+
+    const hosts = [{ value: "github.com" }, ...enterpriseHosts].map((h) => h.value);
+    const { org, repo, pr } = parsePRLink(hosts, tab.url);
 
     const display = `${org}/${repo}#${pr}`;
 
@@ -79,12 +87,6 @@
     };
   }
 
-  async function onHostChange() {
-    await browser.storage.local.set({
-      host: githubInstanceHost,
-    });
-  }
-
   /**
    * @returns {Promise<browser.Tabs.Tab>}
    */
@@ -99,13 +101,36 @@
 
     return tabs[0];
   }
+
+  async function onHostChange() {
+    await saveHosts();
+  }
+
+  function addHost() {
+    console.log("adding host");
+    enterpriseHosts.push({
+      value: "",
+    });
+  }
+
+  function removeHost(host) {
+    enterpriseHosts = enterpriseHosts.filter((h) => h.value !== host.value);
+    console.log("newlength", enterpriseHosts.length);
+    saveHosts();
+  }
+
+  async function saveHosts() {
+    await browser.storage.local.set({
+      enterpriseHosts: JSON.stringify(enterpriseHosts),
+    });
+  }
 </script>
 
 <div class="container">
   <div class="copy-btn-container">
-    <button class="copy-btn" type="button" disabled={copyDisabled} onclick={copy}>{btnText}</button>
+    <button class="copy-btn" type="button" disabled={!copyEnabled} onclick={copy}>{btnText}</button>
   </div>
-  {#if copyDisabled}
+  {#if !copyEnabled}
     <div class="disabled-disclaimer">You must be in a github pull request page to copy a cool link!</div>
   {/if}
   <div class="config-bar">
@@ -116,10 +141,18 @@
   {#if configVisible}
     <div class="config-container">
       <button class="config-close" type="button" onclick={() => (configVisible = false)}><Close /></button>
-      <label>
-        Github Host:
-        <input type="text" bind:value={githubInstanceHost} onchange={onHostChange} />
-      </label>
+      <span class="config-hosts">Enterprise Hosts</span>
+      <button type="button" onclick={addHost}>Add</button>
+      <div class="host-list">
+        {#each enterpriseHosts as host, i}
+          <div class="host-input-group">
+            <input name={`host-value-${i}`} type="text" bind:value={host.value} onchange={onHostChange} />
+            <button class="trash-btn" onclick={() => removeHost(host)} type="button"><Trash /></button>
+          </div>
+        {:else}
+          <span>Github Enterprise hosts can be added here.</span>
+        {/each}
+      </div>
     </div>
   {/if}
 </div>
@@ -187,6 +220,7 @@
     left: 0;
     width: 100%;
     min-height: 100%;
+    padding: 0.4rem;
     background-color: white;
   }
 
@@ -196,5 +230,25 @@
     right: 0;
     width: 30px;
     height: 30px;
+  }
+
+  .trash-btn {
+    width: 15px;
+    height: 15px;
+  }
+
+  .config-hosts {
+    font-weight: 600;
+    font-size: 16px;
+  }
+
+  .host-list {
+    margin-top: 0.4rem;
+  }
+
+  .host-input-group {
+    display: flex;
+    align-items: center;
+    gap: 0.2rem;
   }
 </style>
