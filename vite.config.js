@@ -1,5 +1,9 @@
 import { svelte } from "@sveltejs/vite-plugin-svelte";
+import { defineConfig } from "vite";
 
-export default {
+export default defineConfig({
+  build: {
+    sourcemap: true,
+  },
   plugins: [svelte()],
-};
+});
