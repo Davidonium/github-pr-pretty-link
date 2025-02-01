@@ -7,7 +7,7 @@
 export function parsePRLink(hosts, link) {
   const result = { org: "", repo: "", pr: "" };
 
-  let ok = false
+  let ok = false;
   let path;
   for (const host of hosts) {
     const baseUrl = `https://${host}/`;
@@ -20,7 +20,6 @@ export function parsePRLink(hosts, link) {
   if (!ok) {
     throw new Error(`'${link}' has an unrecognized host, maybe it needs to be added?`);
   }
-
 
   // expected format <org>/<repo>/pull/<pr>
   if (path.length >= 2) {
