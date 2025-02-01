@@ -1,7 +1,5 @@
-import { svelte } from '@sveltejs/vite-plugin-svelte'
+import { svelte } from "@sveltejs/vite-plugin-svelte";
 
 export default {
-  plugins: [
-    svelte(),
-  ],
-}
+  plugins: [svelte()],
+};

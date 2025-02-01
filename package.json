@@ -6,11 +6,14 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "format": "prettier --write ./src/**/*.{svelte,js,json,css,ts}"
   },
   "devDependencies": {
     "@sveltejs/vite-plugin-svelte": "^5.0.3",
     "@types/webextension-polyfill": "^0.12.1",
+    "prettier": "^3.4.2",
+    "prettier-plugin-svelte": "^3.3.3",
     "svelte": "^5.15.0",
     "vite": "^6.0.5",
     "webextension-polyfill": "^0.12.0"

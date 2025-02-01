@@ -2,25 +2,24 @@
   import browser from "webextension-polyfill";
 
   let githubInstanceHost = $state("github.com");
+  let copyDisabled = $state(true);
 
   $effect(async () => {
     const { host } = await browser.storage.local.get("host");
     if (host) {
       githubInstanceHost = host;
     }
+
+    const tab = await activeTab();
+    const url = new URL(tab.url);
+
+    console.log("current tab host", url.hostname, "current stored host", host);
+    copyDisabled = url.hostname !== host;
+    console.log("copy disabled", copyDisabled);
   });
 
   async function copy() {
-    const tabs = await browser.tabs.query({
-      active: true,
-      currentWindow: true,
-    });
-    if (tabs.length != 1) {
-      console.error("failed to retrieve active tab");
-      return;
-    }
-
-    const tab = tabs[0];
+    const tab = await activeTab();
 
     let result;
     try {
@@ -90,11 +89,29 @@
       host: githubInstanceHost,
     });
   }
+
+  async function activeTab() {
+    const tabs = await browser.tabs.query({
+      active: true,
+      currentWindow: true,
+    });
+    if (tabs.length != 1) {
+      console.error("failed to retrieve active tab");
+      return;
+    }
+
+    return tabs[0];
+  }
 </script>
 
 <main>
   <button type="button" onclick={copy}>Copy Pretty Anchor</button>
-  <input type="text" bind:value={githubInstanceHost} onchange={onHostChange} />
+  <input
+    type="text"
+    disabled={copyDisabled}
+    bind:value={githubInstanceHost}
+    onchange={onHostChange}
+  />
 </main>
 
 <style>
