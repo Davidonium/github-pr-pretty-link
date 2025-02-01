@@ -1,6 +1,7 @@
 <script>
   import browser from "webextension-polyfill";
   import { parseGithubLink, isPRLink } from "./lib/github";
+  import Cog from "./lib/icons/Cog.svelte";
 
   let githubInstanceHost = $state("github.com");
   let copyDisabled = $state(true);
@@ -76,7 +77,7 @@
     };
   }
 
-  async function onHostChange(ev) {
+  async function onHostChange() {
     await browser.storage.local.set({
       host: githubInstanceHost,
     });
@@ -99,21 +100,34 @@
 </script>
 
 <div class="container">
-  <div class="btn-container">
-    {#if copyDisabled}
-      <div class="disabled-disclaimer">You must be in a github pull request page to copy a cool link!</div>
-    {/if}
+  <div class="copy-btn-container">
     <button class="copy-btn" type="button" disabled={copyDisabled} onclick={copy}>{btnText}</button>
   </div>
-  <div class="config">
-    <label>
-      Github Host:
-      <input type="text" bind:value={githubInstanceHost} onchange={onHostChange} />
-    </label>
+  {#if copyDisabled}
+    <div class="disabled-disclaimer">You must be in a github pull request page to copy a cool link!</div>
+  {/if}
+  <div class="config-bar">
+    <div class="config-toggle">
+      <Cog />
+    </div>
   </div>
+  {#if false}
+    <div class="config-container">
+      <label>
+        Github Host:
+        <input type="text" bind:value={githubInstanceHost} onchange={onHostChange} />
+      </label>
+    </div>
+  {/if}
 </div>
 
 <style>
+  /* box-shadow fix on copy-btn */
+  .copy-btn-container {
+    padding-right: 4px;
+    padding-bottom: 4px;
+  }
+
   .copy-btn {
     background-color: #f2f2f2;
     border: 2px solid #282c34;
@@ -148,14 +162,23 @@
     pointer-events: none;
   }
 
-  .config {
-    /* position: absolute;
-    top: 100%;
-    left: 0; */
-    margin-top: 1rem;
+  .disabled-disclaimer {
+    margin-top: 0.3rem;
   }
 
-  .disabled-disclaimer {
-    padding-bottom: 0.5rem;
+  .config-bar {
+    display: flex;
+    justify-content: right;
+    margin-top: 0.3rem;
+  }
+
+  .config-toggle {
+    width: 30px;
+    height: 30px;
+    cursor: pointer;
+  }
+
+  .config-container {
+    margin-top: 1rem;
   }
 </style>
