@@ -2,10 +2,12 @@
   import browser from "webextension-polyfill";
   import { parseGithubLink, isPRLink } from "./lib/github";
   import Cog from "./lib/icons/Cog.svelte";
+  import Close from "./lib/icons/Close.svelte";
 
   let githubInstanceHost = $state("github.com");
   let copyDisabled = $state(true);
   let btnText = $state("Copy");
+  let configVisible = $state(false);
   let copiedTimeout;
 
   $effect(async () => {
@@ -107,12 +109,13 @@
     <div class="disabled-disclaimer">You must be in a github pull request page to copy a cool link!</div>
   {/if}
   <div class="config-bar">
-    <div class="config-toggle">
+    <button class="config-toggle" type="button" onclick={() => (configVisible = true)}>
       <Cog />
-    </div>
+    </button>
   </div>
-  {#if false}
+  {#if configVisible}
     <div class="config-container">
+      <button class="config-close" type="button" onclick={() => (configVisible = false)}><Close /></button>
       <label>
         Github Host:
         <input type="text" bind:value={githubInstanceHost} onchange={onHostChange} />
@@ -179,6 +182,19 @@
   }
 
   .config-container {
-    margin-top: 1rem;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    min-height: 100%;
+    background-color: white;
+  }
+
+  .config-close {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 30px;
+    height: 30px;
   }
 </style>
