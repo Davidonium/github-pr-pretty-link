@@ -14,5 +14,11 @@
     "default_popup": "index.html",
     "default_title": "Github PR Pretty Link"
   },
-  "permissions": ["activeTab", "scripting", "storage"]
+  "permissions": ["activeTab", "scripting", "storage"],
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "{fd591c80-a2c9-421b-bece-406eed05714b}",
+      "strict_min_version": "42.0"
+    }
+  }
 }
