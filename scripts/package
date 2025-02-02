@@ -1,0 +1,9 @@
+#!/usr/bin/bash
+
+# this script assumes it's being called from package.json
+
+vite build
+
+pushd dist/app/
+zip -r ../package.zip .
+popd

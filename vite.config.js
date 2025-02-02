@@ -4,6 +4,7 @@ import { defineConfig } from "vite";
 export default defineConfig({
   build: {
     sourcemap: true,
+    outDir: "./dist/app/"
   },
   plugins: [svelte()],
 });
