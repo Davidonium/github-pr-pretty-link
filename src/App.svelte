@@ -14,7 +14,7 @@
   $effect(async () => {
     const entry = await browser.storage.local.get("enterpriseHosts");
 
-    enterpriseHosts = JSON.parse(entry.enterpriseHosts) || [];
+    enterpriseHosts = JSON.parse(entry.enterpriseHosts || "[]");
     console.log(enterpriseHosts.length);
 
     const tab = await activeTab();
