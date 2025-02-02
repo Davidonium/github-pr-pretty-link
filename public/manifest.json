@@ -3,7 +3,7 @@
   "author": "David Hernando",
   "name": "github-pr-pretty-link",
   "version": "1.0",
-  "description": "Copy a pretty github (or github enterprise) pull request link to your clipboard so that your teammates know about what they are about to review.",
+  "description": "Copy a pretty github (or github enterprise) pull request link to your clipboard, make reviews faster!.",
   "icons": {
     "48": "icons/icon-48.png",
     "96": "icons/icon-96.png",
