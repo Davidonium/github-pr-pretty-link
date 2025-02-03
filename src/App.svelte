@@ -2,9 +2,7 @@
   import browser from "webextension-polyfill";
   import { isPRLink, parsePRLink } from "$lib/github";
   import { delay } from "$lib/util/delay";
-  import Cog from "$lib/icons/Cog.svelte";
-  import Close from "$lib/icons/Close.svelte";
-  import Trash from "$lib/icons/Trash.svelte";
+  import { Cog, Close, Trash } from "$lib/icons";
   import { isObject, isString } from "$lib/util/typecheck";
 
   let copyEnabled = $state(false);
