@@ -1,9 +1,11 @@
 <script>
   import browser from "webextension-polyfill";
-  import { isPRLink, parsePRLink } from "./lib/github";
-  import Cog from "./lib/icons/Cog.svelte";
-  import Close from "./lib/icons/Close.svelte";
-  import Trash from "./lib/icons/Trash.svelte";
+  import { isPRLink, parsePRLink } from "$lib/github";
+  import { delay } from "$lib/util/delay";
+  import Cog from "$lib/icons/Cog.svelte";
+  import Close from "$lib/icons/Close.svelte";
+  import Trash from "$lib/icons/Trash.svelte";
+  import { isObject, isString } from "$lib/util/typecheck";
 
   let copyEnabled = $state(false);
   let btnText = $state("Copy");
@@ -11,20 +13,23 @@
   let enterpriseHosts = $state([]);
   let copiedTimeout;
 
-  $effect(async () => {
-    const entry = await browser.storage.local.get("enterpriseHosts");
+  $effect(() => {
+    (async function () {
+      const entry = await browser.storage.local.get("enterpriseHosts");
 
-    enterpriseHosts = JSON.parse(entry.enterpriseHosts || "[]");
-    console.log(enterpriseHosts.length);
+      if (isString(entry.enterpriseHosts)) {
+        enterpriseHosts = JSON.parse(entry.enterpriseHosts);
+      }
 
-    const tab = await activeTab();
-    const url = new URL(tab.url);
+      const tab = await activeTab();
+      const url = new URL(tab.url);
 
-    const hasPRLink = [{ value: "github.com" }, ...enterpriseHosts].some(
-      (host) => url.hostname === host.value && isPRLink(url),
-    );
+      const hasPRLink = [{ value: "github.com" }, ...enterpriseHosts].some(
+        (host) => url.hostname === host.value && isPRLink(url.toString()),
+      );
 
-    copyEnabled = hasPRLink;
+      copyEnabled = hasPRLink;
+    })();
   });
 
   async function copy() {
@@ -37,10 +42,14 @@
           target: { tabId: tab.id },
           func: scrapeTitle,
         })
-      )[0].result;
+      )[0]?.result;
     } catch (err) {
       console.error("Error executing script to retrieve title:", err);
       throw err;
+    }
+
+    if (!result || !isObject(result) || !("title" in result) || !isString(result.title)) {
+      throw new Error("Script execution could not retrieve the title from the current active tab");
     }
 
     const title = result.title;
@@ -101,12 +110,16 @@
     return tabs[0];
   }
 
-  async function onHostChange() {
+  async function onFormChange(ev) {
+    ev.preventDefault();
     await saveHosts();
   }
 
+  const onKeyUp = delay(async () => {
+    await saveHosts();
+  }, 100);
+
   function addHost() {
-    console.log("adding host");
     enterpriseHosts.push({
       value: "",
     });
@@ -114,7 +127,6 @@
 
   function removeHost(host) {
     enterpriseHosts = enterpriseHosts.filter((h) => h.value !== host.value);
-    console.log("newlength", enterpriseHosts.length);
     saveHosts();
   }
 
@@ -143,14 +155,16 @@
       <span class="config-hosts">Enterprise Hosts</span>
       <button type="button" onclick={addHost}>Add</button>
       <div class="host-list">
-        {#each enterpriseHosts as host, i}
-          <div class="host-input-group">
-            <input name={`host-value-${i}`} type="text" bind:value={host.value} onchange={onHostChange} />
-            <button class="trash-btn" onclick={() => removeHost(host)} type="button"><Trash /></button>
-          </div>
-        {:else}
-          <span>Github Enterprise hosts can be added here.</span>
-        {/each}
+        <form onsubmit={onFormChange}>
+          {#each enterpriseHosts as host, i}
+            <div class="host-input-group">
+              <input name={`host-value-${i}`} type="text" bind:value={host.value} onkeyup={onKeyUp} />
+              <button class="trash-btn" onclick={() => removeHost(host)} type="button"><Trash /></button>
+            </div>
+          {:else}
+            <span>Github Enterprise hosts can be added here.</span>
+          {/each}
+        </form>
       </div>
     </div>
   {/if}
