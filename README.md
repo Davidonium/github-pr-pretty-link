@@ -9,6 +9,7 @@ Browser extension to copy a link from the current active tab so that your peers 
 This extension can only be built on a `linux/amd64` machine.
 
 Dependencies:
+- [node/lts](https://nodejs.org/download/release/latest-v22.x/)
 - [pnpm](https://pnpm.io/installation)
 - [bash](https://packages.debian.org/sid/bash)
 - [zip](https://packages.debian.org/sid/zip)
