@@ -8,7 +8,8 @@
     "build": "vite build",
     "package": "./scripts/package",
     "preview": "vite preview",
-    "format": "prettier --write ./src/**/*.{svelte,js,json,css,ts}"
+    "format": "prettier --write ./src/**/*.{svelte,js,json,css,ts}",
+    "lint": "prettier --check ./src/**/*.{svelte,js,json,css,ts}"
   },
   "devDependencies": {
     "@sveltejs/vite-plugin-svelte": "^5.0.3",
