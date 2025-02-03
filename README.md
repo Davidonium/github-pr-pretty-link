@@ -6,7 +6,8 @@ Browser extension to copy a link from the current active tab so that your peers 
 
 ## Building
 
-This extension can only be built on a `linux/amd64` machine.
+This extension is built on a `linux/amd64` machine. If dependencies are replicated, it can be possible to build it in other
+OSes or architecture combinations.
 
 Dependencies:
 - [node/lts](https://nodejs.org/download/release/latest-v22.x/)
