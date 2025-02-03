@@ -2,8 +2,8 @@
   "manifest_version": 3,
   "author": "David Hernando",
   "name": "github-pr-pretty-link",
-  "version": "1.0",
-  "description": "Copy a pretty github (or github enterprise) pull request link to your clipboard, make reviews faster!.",
+  "version": "1.1",
+  "description": "Copy a well-formatted GitHub or GitHub Enterprise pull request link to your clipboard instantly. Simplify code reviews!",
   "icons": {
     "48": "icons/icon-48.png",
     "96": "icons/icon-96.png",
