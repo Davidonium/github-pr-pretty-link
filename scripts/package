@@ -1,5 +1,7 @@
 #!/usr/bin/bash
 
+set -euo pipefail
+
 # this script assumes it's being called from package.json
 
 vite build
