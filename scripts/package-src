@@ -4,8 +4,4 @@ set -euo pipefail
 
 # this script assumes it's being called from package.json
 
-vite build
-
-pushd dist/app/
-zip -r ../package.zip .
-popd
+zip -r dist/source.zip . -x "dist/*" "scripts/*" ".*" "node_modules/*"
