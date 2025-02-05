@@ -3,7 +3,7 @@
   "author": "David Hernando",
   "name": "github-pr-pretty-link",
   "version": "1.1",
-  "description": "Copy a well-formatted GitHub or GitHub Enterprise pull request link to your clipboard instantly. Simplify code reviews!",
+  "description": "Copy a well-formatted GitHub or GitHub Enterprise pull request link to your clipboard instantly. Get reviews faster!",
   "icons": {
     "48": "icons/icon-48.png",
     "96": "icons/icon-96.png",
