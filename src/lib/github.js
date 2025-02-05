@@ -1,5 +1,5 @@
 /**
- * @param {string} host
+ * @param {string[]} hosts
  * @param {string} link
  *
  * @returns {{org: string, repo: string, pr: string}} result
@@ -37,7 +37,6 @@ export function parsePRLink(hosts, link) {
 
 /**
  *
- * @param {string} host
  * @param {string} link
  * @returns {boolean}
  */
