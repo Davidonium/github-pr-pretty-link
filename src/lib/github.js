@@ -35,13 +35,12 @@ export function parsePRLink(hosts, link) {
   return result;
 }
 
+const pattern = new RegExp(`^https://.+/[^/]+/[^/]+/pull/\\d+`);
 /**
  *
  * @param {string} link
  * @returns {boolean}
  */
 export function isPRLink(link) {
-  const pattern = new RegExp(`^https://.+/[^/]+/[^/]+/pull/\\d+`);
-
   return pattern.test(link);
 }
