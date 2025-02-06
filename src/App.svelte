@@ -22,10 +22,8 @@
       const tab = await activeTab();
       const url = new URL(tab.url);
 
-      const hosts = [{ value: "github.com" }, ...enterpriseHosts]
-      const hasPRLink = hosts.some(
-        (host) => url.hostname === host.value && isPRLink(url.toString()),
-      );
+      const hosts = [{ value: "github.com" }, ...enterpriseHosts];
+      const hasPRLink = hosts.some((host) => url.hostname === host.value && isPRLink(url.toString()));
 
       copyEnabled = hasPRLink;
     })();
