@@ -28,7 +28,7 @@ test("the copy button is visible and enabled", async () => {
   /** @type {HTMLButtonElement} */
   const copyBtn = screen.getByRole("button", { name: "Copy" });
 
-  await waitFor(() => expect(copyBtn).not.toBeDisabled());
+  await waitFor(() => expect(copyBtn).toBeEnabled());
 });
 
 test("the copy button is disabled when the active tab is not a pull request page", async () => {
@@ -58,4 +58,33 @@ test("the copy button is disabled when the active tab is not a pull request page
 
   expect(copyBtn).toBeInTheDocument();
   await waitFor(() => expect(copyBtn).toBeDisabled());
+});
+
+test("the copy button is on a github enterprise host that has been added to the config", async () => {
+  vi.mocked(browser.storage.local.get).mockReturnValue(
+    Promise.resolve({
+      enterpriseHosts: JSON.stringify([{ value: "git.acmecorp.lol" }]),
+    }),
+  );
+
+  vi.mocked(browser.tabs.query).mockReturnValue(
+    Promise.resolve([
+      {
+        index: 0,
+        active: true,
+        highlighted: true,
+        pinned: false,
+        incognito: false,
+        url: "https://git.acmecorp.lol/Davidonium/test-project/pull/321",
+      },
+    ]),
+  );
+
+  render(App);
+
+  /** @type {HTMLButtonElement} */
+  const copyBtn = screen.getByRole("button", { name: "Copy" });
+
+  expect(copyBtn).toBeInTheDocument();
+  await waitFor(() => expect(copyBtn).toBeEnabled());
 });
