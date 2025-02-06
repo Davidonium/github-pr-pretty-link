@@ -7,19 +7,21 @@ import { fileURLToPath } from "node:url";
 const __dirname = dirname(fileURLToPath(import.meta.url))
 
 /// <reference types="vitest/config" />
-export default defineConfig({
-  build: {
-    sourcemap: true,
-    outDir: "./dist/app/"
-  },
-  resolve: {
-    alias: {
-      "$lib": resolve(__dirname, "./src/lib"),
+export default defineConfig(({ mode }) => {
+  return {
+    build: {
+      sourcemap: mode !== "production",
+      outDir: "./dist/app/"
     },
-  },
-  plugins: [svelte(), svelteTesting()],
-  test: {
-    setupFiles: ["./test.setup.js"],
-    environment: "jsdom"
+    resolve: {
+      alias: {
+        "$lib": resolve(__dirname, "./src/lib"),
+      },
+    },
+    plugins: [svelte(), svelteTesting()],
+    test: {
+      setupFiles: ["./test.setup.js"],
+      environment: "jsdom"
+    }
   }
 });
