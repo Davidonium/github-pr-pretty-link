@@ -245,7 +245,23 @@
    * Handler for HTML template changes - marks as manually edited
    */
   function onHtmlTemplateChange() {
-    htmlManuallyEdited = true;
+    // If user clears the HTML field, re-enable auto-sync
+    if (editingTemplate && (!editingTemplate.template.html || editingTemplate.template.html.trim() === "")) {
+      htmlManuallyEdited = false;
+      editingTemplate.template.html = markdownLinksToHtml(editingTemplate.template.plain);
+    } else {
+      htmlManuallyEdited = true;
+    }
+  }
+
+  /**
+   * Resets HTML to auto-generate from plain template
+   */
+  function resetHtmlSync() {
+    if (editingTemplate) {
+      htmlManuallyEdited = false;
+      editingTemplate.template.html = markdownLinksToHtml(editingTemplate.template.plain);
+    }
   }
 
   /**
@@ -460,7 +476,14 @@
             </label>
 
             <label>
-              HTML Template:
+              <div class="label-with-button">
+                <span>HTML Template:</span>
+                {#if htmlManuallyEdited}
+                  <button type="button" class="reset-sync-btn" onclick={resetHtmlSync} title="Reset to auto-generate from plain text">
+                    ↻ Sync from plain
+                  </button>
+                {/if}
+              </div>
               <textarea
                 bind:value={editingTemplate.template.html}
                 oninput={onHtmlTemplateChange}
@@ -699,6 +722,26 @@
   .template-editor label {
     display: block;
     margin-bottom: 1rem;
+  }
+
+  .label-with-button {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.25rem;
+  }
+
+  .reset-sync-btn {
+    font-size: 11px;
+    padding: 0.25rem 0.5rem;
+    background-color: #e0e0e0;
+    border: 1px solid #999;
+    border-radius: 3px;
+    cursor: pointer;
+  }
+
+  .reset-sync-btn:hover {
+    background-color: #d0d0d0;
   }
 
   .template-editor input[type="text"] {
