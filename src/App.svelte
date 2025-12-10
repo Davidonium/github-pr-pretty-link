@@ -11,6 +11,7 @@
     validateTemplate,
     MAX_TEMPLATES,
   } from "$lib/template";
+  import { markdownLinksToHtml } from "$lib/markdown";
 
   let copyEnabled = $state(false);
   let btnText = $state("Copy");
@@ -20,6 +21,7 @@
   let editingTemplate = $state(null);
   let previewData = $state(null);
   let confirmDelete = $state(null);
+  let htmlManuallyEdited = $state(false);
   let copiedTimeout;
 
   let activeTemplate = $derived(templates.find((t) => t.isActive) || templates[0]);
@@ -199,16 +201,18 @@
       return;
     }
 
+    const plainTemplate = "[${" + "display}](${" + "url}) - ${" + "title}";
     const newTemplate = {
       id: generateTemplateId(),
       name: `Template ${templates.length + 1}`,
       template: {
-        plain: "[${" + "display}](${" + "url}) - ${" + "title}",
-        html: '<a href="${' + 'url}">${' + "display}</a> - ${" + "title}",
+        plain: plainTemplate,
+        html: markdownLinksToHtml(plainTemplate),
       },
       isActive: false,
     };
     editingTemplate = newTemplate;
+    htmlManuallyEdited = false;
   }
 
   /**
@@ -217,6 +221,7 @@
    */
   function startEditTemplate(template) {
     editingTemplate = { ...template, template: { ...template.template } };
+    htmlManuallyEdited = false;
   }
 
   /**
@@ -224,6 +229,23 @@
    */
   function cancelEditTemplate() {
     editingTemplate = null;
+    htmlManuallyEdited = false;
+  }
+
+  /**
+   * Handler for plain template changes - auto-generates HTML unless manually edited
+   */
+  function onPlainTemplateChange() {
+    if (editingTemplate && !htmlManuallyEdited) {
+      editingTemplate.template.html = markdownLinksToHtml(editingTemplate.template.plain);
+    }
+  }
+
+  /**
+   * Handler for HTML template changes - marks as manually edited
+   */
+  function onHtmlTemplateChange() {
+    htmlManuallyEdited = true;
   }
 
   /**
@@ -256,6 +278,7 @@
     });
 
     editingTemplate = null;
+    htmlManuallyEdited = false;
   }
 
   /**
@@ -429,6 +452,7 @@
               Plain Text Template:
               <textarea
                 bind:value={editingTemplate.template.plain}
+                oninput={onPlainTemplateChange}
                 placeholder={"[${display}](${url}) - ${title}"}
                 maxlength="1024"
               ></textarea>
@@ -439,6 +463,7 @@
               HTML Template:
               <textarea
                 bind:value={editingTemplate.template.html}
+                oninput={onHtmlTemplateChange}
                 placeholder={'<a href="${url}">${display}</a> - ${title}'}
                 maxlength="1024"
               ></textarea>

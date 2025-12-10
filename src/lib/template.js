@@ -1,3 +1,5 @@
+import { markdownLinksToHtml } from "./markdown";
+
 export const MAX_TEMPLATES = 20;
 export const MAX_TEMPLATE_LENGTH = 1024;
 
