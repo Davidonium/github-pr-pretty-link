@@ -601,10 +601,8 @@
   }
 
   .config-container {
-    height: 600px;
     padding: 0.4rem;
     background-color: white;
-    overflow-y: scroll;
   }
 
   .config-close {
