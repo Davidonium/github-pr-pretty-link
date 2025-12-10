@@ -22,6 +22,8 @@
   let confirmDelete = $state(null);
   let copiedTimeout;
 
+  let activeTemplate = $derived(templates.find((t) => t.isActive) || templates[0]);
+
   $effect(() => {
     (async function () {
       const entry = await browser.storage.local.get(["enterpriseHosts", "templates"]);
@@ -102,7 +104,6 @@
     const display = `${org}/${repo}#${pr}`;
 
     // Get active template
-    const activeTemplate = templates.find((t) => t.isActive) || templates[0];
     if (!activeTemplate) {
       throw new Error("No template available");
     }
@@ -323,6 +324,16 @@
     {#if !copyEnabled}
       <div class="disabled-disclaimer">You must be in a github pull request page to copy a cool link!</div>
     {/if}
+    {#if copyEnabled && previewData && activeTemplate}
+      {#key activeTemplate.id}
+        <div class="main-preview">
+          <strong>Preview:</strong>
+          <div class="main-preview-content">
+            {@html generateClipboardContent(activeTemplate.template, previewData).html}
+          </div>
+        </div>
+      {/key}
+    {/if}
     <div class="config-bar">
       <button class="config-toggle" type="button" onclick={() => (configVisible = true)}>
         <Cog />
@@ -506,6 +517,27 @@
 
   .disabled-disclaimer {
     margin-top: 0.3rem;
+  }
+
+  .main-preview {
+    margin-top: 0.5rem;
+    padding: 0.5rem;
+    background-color: #f9f9f9;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 13px;
+  }
+
+  .main-preview strong {
+    display: block;
+    margin-bottom: 0.25rem;
+    font-size: 12px;
+    color: #666;
+  }
+
+  .main-preview-content {
+    word-wrap: break-word;
+    overflow-wrap: break-word;
   }
 
   .config-bar {
