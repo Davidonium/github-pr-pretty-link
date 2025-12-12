@@ -136,17 +136,17 @@
   <div class="config-section">
     <span class="config-section-title">Enterprise Hosts</span>
     <button
+      class="btn"
       type="button"
       onclick={() => {
         appState.addEmptyHost();
-      }}>Add</button
-    >
+      }}>Add</button>
     <div class="host-list">
       <form onsubmit={onHostSubmit}>
         {#each appState.enterpriseHosts as host, i}
           <div class="host-input-group">
             <input name={`host-value-${i}`} type="text" bind:value={host.value} onkeyup={onKeyUp} />
-            <button class="trash-btn" onclick={() => appState.removeHost(host)} type="button"><Trash /></button>
+            <button class="btn trash-btn" onclick={() => appState.removeHost(host)} type="button"><Trash /></button>
           </div>
         {:else}
           <span>Github Enterprise hosts can be added here.</span>
@@ -157,8 +157,8 @@
 
   <div class="config-section">
     <span class="config-section-title">Link Templates</span>
-    <button type="button" onclick={addTemplate} disabled={appState.templates.length >= MAX_TEMPLATES}>
-      Add Template {appState.templates.length >= MAX_TEMPLATES ? `(Max ${MAX_TEMPLATES})` : ""}
+    <button class="btn" type="button" onclick={addTemplate} disabled={appState.templates.length >= MAX_TEMPLATES}>
+      Add {appState.templates.length >= MAX_TEMPLATES ? `(Max ${MAX_TEMPLATES})` : ""}
     </button>
 
     <div class="template-list">
@@ -174,10 +174,10 @@
             <span class="template-name">{template.name}</span>
           </label>
           <div class="template-actions">
-            <button type="button" onclick={() => startEditTemplate(template)}>Edit</button>
+            <button class="btn" type="button" onclick={() => startEditTemplate(template)}>Edit</button>
             <div class="delete-wrapper">
               <button
-                class="trash-btn"
+                class="btn trash-btn"
                 onclick={() => deleteTemplate(template)}
                 type="button"
                 disabled={template.id === "default"}
@@ -207,8 +207,6 @@
 
     {#if editingTemplate}
       <div class="template-editor">
-        <h3>{editingTemplate.id.startsWith("template-") ? "Edit" : "New"} Template</h3>
-
         <label>
           Name:
           <input type="text" bind:value={editingTemplate.name} placeholder="Template name" />
@@ -267,8 +265,8 @@
         {/if}
 
         <div class="template-editor-actions">
-          <button type="button" onclick={saveTemplate}>Save</button>
-          <button type="button" onclick={cancelEditTemplate}>Cancel</button>
+          <button class="btn" type="button" onclick={saveTemplate}>Save</button>
+          <button class="btn" type="button" onclick={cancelEditTemplate}>Cancel</button>
         </div>
       </div>
     {/if}
@@ -290,8 +288,13 @@
   }
 
   .trash-btn {
-    width: 15px;
-    height: 15px;
+    padding: 0.25rem;
+    min-width: 28px;
+  }
+
+  .trash-btn :global(svg) {
+    width: 14px;
+    height: 14px;
   }
 
   .trash-btn:disabled {
@@ -491,11 +494,6 @@
     margin-top: 1rem;
     display: flex;
     gap: 0.5rem;
-  }
-
-  .template-editor-actions button {
-    padding: 0.5rem 1rem;
-    cursor: pointer;
   }
 
   .confirm-btn {
