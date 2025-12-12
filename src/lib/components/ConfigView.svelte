@@ -208,12 +208,12 @@
     {#if editingTemplate}
       <div class="template-editor">
         <label>
-          Name:
+          <span class="label-text">Name</span>
           <input type="text" bind:value={editingTemplate.name} placeholder="Template name" />
         </label>
 
         <label>
-          Plain Text Template:
+          <span class="label-text">Plain Text Template</span>
           <textarea
             bind:value={editingTemplate.template.plain}
             oninput={onPlainTemplateChange}
@@ -225,7 +225,7 @@
 
         <label>
           <div class="label-with-button">
-            <span>HTML Template:</span>
+            <span class="label-text">HTML Template</span>
             {#if htmlManuallyEdited}
               <button
                 type="button"
@@ -384,8 +384,7 @@
   }
 
   .template-editor {
-    margin-top: 1rem;
-    padding: 1rem;
+    padding: 0.7rem;
     border: 2px solid #282c34;
     border-radius: 8px;
     background-color: #f9f9f9;
@@ -401,20 +400,26 @@
     margin-bottom: 1rem;
   }
 
+  .label-text {
+    display: block;
+    font-weight: 600;
+    margin-bottom: 0.25rem;
+  }
+
   .label-with-button {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 0.25rem;
   }
 
   .reset-sync-btn {
-    font-size: 11px;
+    font-size: 10px;
     padding: 0.25rem 0.5rem;
     background-color: #e0e0e0;
     border: 1px solid #999;
     border-radius: 3px;
     cursor: pointer;
+    margin-bottom: 0.1rem;
   }
 
   .reset-sync-btn:hover {
@@ -425,17 +430,16 @@
     width: 100%;
     padding: 0.5rem;
     margin-top: 0.25rem;
-    border: 1px solid #ddd;
-    border-radius: 4px;
+    border: 2px solid #282c34;
+    border-radius: 6px;
   }
 
   .template-editor textarea {
     width: 100%;
     min-height: 80px;
     padding: 0.5rem;
-    margin-top: 0.25rem;
-    border: 1px solid #ddd;
-    border-radius: 4px;
+    border: 2px solid #282c34;
+    border-radius: 6px;
     font-family: monospace;
     font-size: 12px;
     resize: vertical;
