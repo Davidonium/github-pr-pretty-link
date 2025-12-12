@@ -1,11 +1,11 @@
 <script>
-  /** @import { Template } from '$lib/types.js' */
-
   import { appState } from "$lib/state.svelte.js";
   import { delay } from "$lib/util/delay";
   import { Close, Trash, Check } from "$lib/icons";
   import { generateClipboardContent, generateTemplateId, validateTemplate, MAX_TEMPLATES } from "$lib/template";
   import { markdownLinksToHtml } from "$lib/markdown";
+
+  /** @import { Template } from '$lib/types.js' */
 
   /** @type {Template | null} */
   let editingTemplate = $state(null);

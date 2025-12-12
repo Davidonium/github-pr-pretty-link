@@ -1,4 +1,4 @@
-/** @import { Template, EnterpriseHost } from './types.js' */
+/** @import { Template, EnterpriseHost, PageContext } from './types.js' */
 
 import browser from "webextension-polyfill";
 import { isString } from "$lib/util/typecheck";
@@ -6,10 +6,14 @@ import { getDefaultTemplate } from "$lib/template";
 
 class AppState {
   configVisible = $state(false);
+  /** @type {EnterpriseHost[]} */
   enterpriseHosts = $state([]);
+  /** @type {Template[]} */
   templates = $state([]);
+  /** @type {Template | undefined} */
   activeTemplate = $derived(this.templates.find((t) => t.isActive) || this.templates[0]);
-  currentPageContext = $state({})
+  /** @type {PageContext} */
+  currentPageContext = $state({});
 
   async initialize() {
     const entry = await browser.storage.local.get(["enterpriseHosts", "templates"]);
