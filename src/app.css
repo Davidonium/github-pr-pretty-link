@@ -16,3 +16,35 @@ input[type="reset"] {
   cursor: pointer;
   outline: inherit;
 }
+
+.btn {
+  background-color: #f2f2f2;
+  border: 2px solid #282c34;
+  border-radius: 6px;
+  box-shadow: #282c34 2px 2px 0 0;
+  color: #282c34;
+  cursor: pointer;
+  display: inline-block;
+  font-weight: 600;
+  font-size: 12px;
+  padding: 0.3rem 0.6rem;
+  text-align: center;
+  text-decoration: none;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+}
+
+.btn:hover:enabled {
+  background-color: #fff;
+}
+
+.btn:active:enabled {
+  box-shadow: #282c34 1px 1px 0 0;
+  transform: translate(1px, 1px);
+}
+
+.btn:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
