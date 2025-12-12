@@ -9,8 +9,8 @@
     "package": "./scripts/package",
     "preview": "vite preview",
     "test": "vitest run",
-    "format": "prettier --write ./src/**/*.{svelte,js,json,css,ts}",
-    "lint": "prettier --check ./src/**/*.{svelte,js,json,css,ts}"
+    "format": "prettier --write ./src/**/*.{svelte,js,css,ts}",
+    "lint": "prettier --check ./src/**/*.{svelte,js,css,ts}"
   },
   "devDependencies": {
     "@sveltejs/vite-plugin-svelte": "^5.0.3",
