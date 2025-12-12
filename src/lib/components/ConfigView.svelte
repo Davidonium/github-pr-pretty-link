@@ -136,11 +136,12 @@
   <div class="config-section">
     <span class="config-section-title">Enterprise Hosts</span>
     <button
-      class="btn"
+      class="btn config-section-title-btn"
       type="button"
       onclick={() => {
         appState.addEmptyHost();
-      }}>Add</button>
+      }}>Add</button
+    >
     <div class="host-list">
       <form onsubmit={onHostSubmit}>
         {#each appState.enterpriseHosts as host, i}
@@ -157,13 +158,18 @@
 
   <div class="config-section">
     <span class="config-section-title">Link Templates</span>
-    <button class="btn" type="button" onclick={addTemplate} disabled={appState.templates.length >= MAX_TEMPLATES}>
+    <button
+      class="btn config-section-title-btn"
+      type="button"
+      onclick={addTemplate}
+      disabled={appState.templates.length >= MAX_TEMPLATES}
+    >
       Add {appState.templates.length >= MAX_TEMPLATES ? `(Max ${MAX_TEMPLATES})` : ""}
     </button>
 
     <div class="template-list">
       {#each appState.templates as template}
-        <div class="template-item">
+        <div class={{ 'template-item': true, active: template.isActive }}>
           <label>
             <input
               type="radio"
@@ -307,6 +313,10 @@
     font-size: 16px;
   }
 
+  .config-section-title-btn {
+    margin-left: 2px;
+  }
+
   .config-section {
     margin-top: 1rem;
     padding-top: 1rem;
@@ -343,6 +353,13 @@
     padding: 0.5rem;
     border: 1px solid #ddd;
     border-radius: 4px;
+    background-color: white;
+    transition: background-color 0.2s;
+  }
+
+  .template-item.active {
+    background-color: #e8f4f8;
+    border-color: #b3d9e6;
   }
 
   .template-item label {
@@ -385,14 +402,10 @@
 
   .template-editor {
     padding: 0.7rem;
+    margin-top: 0.7rem;
     border: 2px solid #282c34;
     border-radius: 8px;
     background-color: #f9f9f9;
-  }
-
-  .template-editor h3 {
-    margin-top: 0;
-    margin-bottom: 1rem;
   }
 
   .template-editor label {
