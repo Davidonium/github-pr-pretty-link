@@ -1,3 +1,5 @@
+/** @import { Template, EnterpriseHost } from './types.js' */
+
 import browser from "webextension-polyfill";
 import { isString } from "$lib/util/typecheck";
 import { getDefaultTemplate } from "$lib/template";
@@ -32,6 +34,9 @@ class AppState {
     });
   }
 
+  /**
+   * @param {EnterpriseHost} host
+   */
   async removeHost(host) {
     appState.enterpriseHosts = appState.enterpriseHosts.filter((h) => h.value !== host.value);
     appState.saveHosts();
@@ -49,6 +54,9 @@ class AppState {
     });
   }
 
+  /**
+   * @param {Template} template
+   */
   async updateOrAddTemplate(template) {
     const existingIndex = this.templates.findIndex((t) => t.id === template.id);
     if (existingIndex >= 0) {
@@ -59,6 +67,9 @@ class AppState {
     await this.saveTemplates();
   }
 
+  /**
+   * @param {Template} template
+   */
   async deleteTemplate(template) {
     if (template.id === "default") {
       return false;
@@ -74,6 +85,9 @@ class AppState {
     return true;
   }
 
+  /**
+   * @param {Template} template
+   */
   async setActiveTemplate(template) {
     this.templates = this.templates.map((t) => ({
       ...t,

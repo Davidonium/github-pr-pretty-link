@@ -1,11 +1,15 @@
 <script>
+  /** @import { Template } from '$lib/types.js' */
+
   import { appState } from "$lib/state.svelte.js";
   import { delay } from "$lib/util/delay";
   import { Close, Trash, Check } from "$lib/icons";
   import { generateClipboardContent, generateTemplateId, validateTemplate, MAX_TEMPLATES } from "$lib/template";
   import { markdownLinksToHtml } from "$lib/markdown";
 
+  /** @type {Template | null} */
   let editingTemplate = $state(null);
+  /** @type {Template | null} */
   let confirmDelete = $state(null);
   let htmlManuallyEdited = $state(false);
 
@@ -40,6 +44,9 @@
     htmlManuallyEdited = false;
   }
 
+  /**
+   * @param {Template} template
+   */
   function startEditTemplate(template) {
     editingTemplate = { ...template, template: { ...template.template } };
     htmlManuallyEdited = false;
@@ -92,6 +99,9 @@
     htmlManuallyEdited = false;
   }
 
+  /**
+   * @param {Template} template
+   */
   async function deleteTemplate(template) {
     if (template.id === "default") {
       return;
@@ -112,6 +122,9 @@
     confirmDelete = null;
   }
 
+  /**
+   * @param {Template} template
+   */
   async function setActiveTemplate(template) {
     await appState.setActiveTemplate(template);
   }
