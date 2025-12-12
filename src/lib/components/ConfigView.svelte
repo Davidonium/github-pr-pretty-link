@@ -9,7 +9,10 @@
   let confirmDelete = $state(null);
   let htmlManuallyEdited = $state(false);
 
-  async function onSubmit(ev) {
+  /**
+   * @param {SubmitEvent} ev
+   */
+  async function onHostSubmit(ev) {
     ev.preventDefault();
     await appState.saveHosts();
   }
@@ -83,14 +86,7 @@
       return;
     }
 
-    const existingIndex = appState.templates.findIndex((t) => t.id === editingTemplate.id);
-    if (existingIndex >= 0) {
-      appState.templates[existingIndex] = editingTemplate;
-    } else {
-      appState.templates = [...appState.templates, editingTemplate];
-    }
-
-    await appState.saveTemplates();
+    await appState.updateOrAddTemplate(editingTemplate);
 
     editingTemplate = null;
     htmlManuallyEdited = false;
@@ -107,13 +103,7 @@
   async function confirmDeleteTemplate() {
     if (!confirmDelete) return;
 
-    appState.templates = appState.templates.filter((t) => t.id !== confirmDelete.id);
-
-    if (confirmDelete.isActive && appState.templates.length > 0) {
-      appState.templates[0].isActive = true;
-    }
-
-    await appState.saveTemplates();
+    await appState.deleteTemplate(confirmDelete);
 
     confirmDelete = null;
   }
@@ -123,12 +113,7 @@
   }
 
   async function setActiveTemplate(template) {
-    appState.templates = appState.templates.map((t) => ({
-      ...t,
-      isActive: t.id === template.id,
-    }));
-
-    await appState.saveTemplates();
+    await appState.setActiveTemplate(template);
   }
 </script>
 
@@ -144,7 +129,7 @@
       }}>Add</button
     >
     <div class="host-list">
-      <form onsubmit={onSubmit}>
+      <form onsubmit={onHostSubmit}>
         {#each appState.enterpriseHosts as host, i}
           <div class="host-input-group">
             <input name={`host-value-${i}`} type="text" bind:value={host.value} onkeyup={onKeyUp} />
@@ -257,13 +242,13 @@
           </small>
         </div>
 
-        {#if appState.previewData}
+        {#if appState.currentPageContext}
           <div class="template-preview">
             <strong>Preview (Plain):</strong>
-            <pre>{generateClipboardContent(editingTemplate.template, appState.previewData).plain}</pre>
+            <pre>{generateClipboardContent(editingTemplate.template, appState.currentPageContext).plain}</pre>
             <strong>Preview (HTML):</strong>
             <div class="preview-html">
-              {@html generateClipboardContent(editingTemplate.template, appState.previewData).html}
+              {@html generateClipboardContent(editingTemplate.template, appState.currentPageContext).html}
             </div>
           </div>
         {/if}

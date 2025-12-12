@@ -3,15 +3,11 @@ import { isString } from "$lib/util/typecheck";
 import { getDefaultTemplate } from "$lib/template";
 
 class AppState {
-  copyEnabled = $state(false);
-  btnText = $state("Copy");
   configVisible = $state(false);
   enterpriseHosts = $state([]);
   templates = $state([]);
-  previewData = $state(null);
-  copiedTimeout = null;
-
   activeTemplate = $derived(this.templates.find((t) => t.isActive) || this.templates[0]);
+  currentPageContext = $state({})
 
   async initialize() {
     const entry = await browser.storage.local.get(["enterpriseHosts", "templates"]);
@@ -51,6 +47,40 @@ class AppState {
     await browser.storage.local.set({
       templates: JSON.stringify(this.templates),
     });
+  }
+
+  async updateOrAddTemplate(template) {
+    const existingIndex = this.templates.findIndex((t) => t.id === template.id);
+    if (existingIndex >= 0) {
+      this.templates[existingIndex] = template;
+    } else {
+      this.templates = [...this.templates, template];
+    }
+    await this.saveTemplates();
+  }
+
+  async deleteTemplate(template) {
+    if (template.id === "default") {
+      return false;
+    }
+
+    this.templates = this.templates.filter((t) => t.id !== template.id);
+
+    if (template.isActive && this.templates.length > 0) {
+      this.templates[0].isActive = true;
+    }
+
+    await this.saveTemplates();
+    return true;
+  }
+
+  async setActiveTemplate(template) {
+    this.templates = this.templates.map((t) => ({
+      ...t,
+      isActive: t.id === template.id,
+    }));
+
+    await this.saveTemplates();
   }
 }
 

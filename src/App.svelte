@@ -16,5 +16,3 @@
     <ConfigView />
   {/if}
 </div>
-
-

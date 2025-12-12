@@ -8,7 +8,6 @@
 
   let copyEnabled = $state(false);
   let btnText = $state("Copy");
-  let previewData = $state(null);
   let copiedTimeout = null;
 
   async function activeTab() {
@@ -51,7 +50,7 @@
           hosts.map((h) => h.value),
           tab.url,
         );
-        previewData = {
+        appState.currentPageContext = {
           org,
           repo,
           pr,
@@ -134,18 +133,18 @@
 {#if !copyEnabled}
   <div class="disabled-disclaimer">You must be in a github pull request page to copy a cool link!</div>
 {/if}
-{#if copyEnabled && previewData && appState.activeTemplate}
+{#if copyEnabled && appState.currentPageContext && appState.activeTemplate}
   {#key appState.activeTemplate.id}
     <div class="main-preview">
       <strong>Preview:</strong>
       <div class="main-preview-content">
-        {@html generateClipboardContent(appState.activeTemplate.template, previewData).html}
+        {@html generateClipboardContent(appState.activeTemplate.template, appState.currentPageContext).html}
       </div>
     </div>
   {/key}
 {/if}
 <div class="config-bar">
-  <button class="config-toggle" type="button" onclick={() => appState.configVisible = true}>
+  <button class="config-toggle" type="button" onclick={() => (appState.configVisible = true)}>
     <Cog />
   </button>
 </div>

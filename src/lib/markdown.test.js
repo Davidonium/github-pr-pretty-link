@@ -52,7 +52,5 @@ test("escapeHtml preserves safe text", () => {
 test("markdownLinksToHtml with multiple links in PR format", () => {
   const input = "[org/repo#1](url1) - Fix, [org/repo#2](url2) - Another";
   const output = markdownLinksToHtml(input);
-  expect(output).toBe(
-    '<a href="url1">org/repo#1</a> - Fix, <a href="url2">org/repo#2</a> - Another',
-  );
+  expect(output).toBe('<a href="url1">org/repo#1</a> - Fix, <a href="url2">org/repo#2</a> - Another');
 });
