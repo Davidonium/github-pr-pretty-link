@@ -6,7 +6,6 @@
   import { isObject, isString } from "$lib/util/typecheck";
   import { Cog } from "$lib/icons";
 
-  let copyEnabled = $state(false);
   let btnText = $state("Copy");
   let copiedTimeout = null;
 
@@ -28,14 +27,12 @@
     };
   }
 
-  async function initialize() {
+  async function checkCurrentPage() {
     const tab = await activeTab();
     const url = new URL(tab.url);
 
     const hosts = [{ value: "github.com" }, ...appState.enterpriseHosts];
     const hasPRLink = hosts.some((host) => url.hostname === host.value && isPRLink(url.toString()));
-
-    copyEnabled = hasPRLink;
 
     if (hasPRLink) {
       const result = (
@@ -59,8 +56,15 @@
           display: `${org}/${repo}#${pr}`,
         };
       }
+    } else {
+      appState.resetCurrentPageContext()
     }
   }
+  
+  const copyEnabled = $derived(
+    appState.currentPageContext && 
+    Object.keys(appState.currentPageContext).length > 0
+  );
 
   async function copy() {
     const tab = await activeTab();
@@ -124,7 +128,13 @@
     }, 2000);
   }
 
-  initialize();
+  $effect(() => {
+    if (appState.enterpriseHosts) {
+      (async () => {
+        await checkCurrentPage();
+      })();
+    }
+  });
 </script>
 
 <div class="copy-btn-container">

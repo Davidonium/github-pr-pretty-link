@@ -4,6 +4,16 @@ import browser from "webextension-polyfill";
 import { isString } from "$lib/util/typecheck";
 import { getDefaultTemplate } from "$lib/template";
 
+/** @type {PageContext} */
+const emptyPageContext = {
+  display: "",
+  org: "",
+  pr: "",
+  repo: "",
+  title: "",
+  url: "",
+};
+
 class AppState {
   configVisible = $state(false);
   /** @type {EnterpriseHost[]} */
@@ -13,9 +23,20 @@ class AppState {
   /** @type {Template | undefined} */
   activeTemplate = $derived(this.templates.find((t) => t.isActive) || this.templates[0]);
   /** @type {PageContext} */
-  currentPageContext = $state({});
+  currentPageContext = $state(emptyPageContext);
+
+  #initializePromise = null;
 
   async initialize() {
+    if (this.#initializePromise) {
+      return this.#initializePromise;
+    }
+
+    this.#initializePromise = this.#doInitialize();
+    return this.#initializePromise;
+  }
+
+  async #doInitialize() {
     const entry = await browser.storage.local.get(["enterpriseHosts", "templates"]);
 
     if (isString(entry.enterpriseHosts)) {
@@ -30,6 +51,10 @@ class AppState {
         templates: JSON.stringify(this.templates),
       });
     }
+  }
+
+  resetCurrentPageContext() {
+    this.currentPageContext = emptyPageContext;
   }
 
   async addEmptyHost() {

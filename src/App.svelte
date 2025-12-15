@@ -4,7 +4,9 @@
   import ConfigView from "$lib/components/ConfigView.svelte";
 
   $effect(() => {
-    appState.initialize();
+    (async () => {
+      await appState.initialize();
+    })();
   });
 </script>
 
