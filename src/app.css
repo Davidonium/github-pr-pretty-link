@@ -48,3 +48,7 @@ input[type="reset"] {
   opacity: 0.7;
   cursor: not-allowed;
 }
+
+.text-sm {
+  font-size: 0.75rem;
+}

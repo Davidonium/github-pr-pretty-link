@@ -63,7 +63,8 @@
   
   const copyEnabled = $derived(
     appState.currentPageContext && 
-    Object.keys(appState.currentPageContext).length > 0
+    appState.currentPageContext.org !== "" &&
+    appState.currentPageContext.pr !== ""
   );
 
   async function copy() {
@@ -141,7 +142,7 @@
   <button class="copy-btn" type="button" disabled={!copyEnabled} onclick={() => copy()}>{btnText}</button>
 </div>
 {#if !copyEnabled}
-  <div class="disabled-disclaimer">You must be in a github pull request page to copy a cool link!</div>
+  <div class="disabled-disclaimer text-sm">You must be in a github pull request page to copy a cool link!</div>
 {/if}
 {#if copyEnabled && appState.currentPageContext && appState.activeTemplate}
   {#key appState.activeTemplate.id}
