@@ -150,7 +150,7 @@
             <button class="btn trash-btn" onclick={() => appState.removeHost(host)} type="button"><Trash /></button>
           </div>
         {:else}
-          <span>Github Enterprise hosts can be added here.</span>
+          <span class="text-sm">Github Enterprise hosts can be added here.</span>
         {/each}
       </form>
     </div>
@@ -177,7 +177,7 @@
               checked={template.isActive}
               onchange={() => setActiveTemplate(template)}
             />
-            <span class="template-name">{template.name}</span>
+            <span class="template-name text-sm">{template.name}</span>
           </label>
           <div class="template-actions">
             <button class="btn" type="button" onclick={() => startEditTemplate(template)}>Edit</button>
@@ -264,7 +264,7 @@
             <strong>Preview (Plain):</strong>
             <pre>{generateClipboardContent(editingTemplate.template, appState.currentPageContext).plain}</pre>
             <strong>Preview (HTML):</strong>
-            <div class="preview-html">
+            <div class="preview-html text-sm">
               {@html generateClipboardContent(editingTemplate.template, appState.currentPageContext).html}
             </div>
           </div>
