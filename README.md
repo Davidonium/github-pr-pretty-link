@@ -18,7 +18,7 @@ OSes or architecture combinations.
 
 Dependencies:
 
-- [node/lts](https://nodejs.org/download/release/latest-v22.x/)
+- [node/lts](https://nodejs.org/en/download)
 - [pnpm](https://pnpm.io/installation)
 - [bash](https://packages.debian.org/sid/bash)
 - [zip](https://packages.debian.org/sid/zip)
