@@ -9,3 +9,5 @@ vite build
 pushd dist/app/
 zip -r ../package.zip .
 popd
+
+echo "Package is now available at ./dist/package.zip"
