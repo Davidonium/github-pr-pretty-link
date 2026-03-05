@@ -22,8 +22,25 @@
   }
 
   function scrapeTitle() {
+    // The legacy way doesn't use react, a simple parse is enough.
+    // In case there's AB testing, both cases are tried.
+    let title = document.querySelector("h1.gh-header-title .js-issue-title")?.textContent;
+    if (!title) {
+      try {
+        const reactData = JSON.parse(
+          document.querySelector("script[data-target='react-app.embeddedData']")?.textContent,
+        );
+        title = reactData.payload.pullRequestsLayoutRoute.pullRequest.title;
+      } catch (e) {
+        console.error("Failure scraping Github PR title", e);
+        return {
+          title: null,
+        };
+      }
+    }
+
     return {
-      title: document.querySelector("h1.gh-header-title .js-issue-title").textContent,
+      title,
     };
   }
 
@@ -57,14 +74,12 @@
         };
       }
     } else {
-      appState.resetCurrentPageContext()
+      appState.resetCurrentPageContext();
     }
   }
-  
+
   const copyEnabled = $derived(
-    appState.currentPageContext && 
-    appState.currentPageContext.org !== "" &&
-    appState.currentPageContext.pr !== ""
+    appState.currentPageContext && appState.currentPageContext.org !== "" && appState.currentPageContext.pr !== "",
   );
 
   async function copy() {
@@ -130,11 +145,9 @@
   }
 
   $effect(() => {
-    if (appState.enterpriseHosts) {
-      (async () => {
-        await checkCurrentPage();
-      })();
-    }
+    (async () => {
+      await checkCurrentPage();
+    })();
   });
 </script>
 
