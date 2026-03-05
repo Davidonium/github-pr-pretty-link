@@ -41,3 +41,9 @@ pnpm package
 ```
 
 The package will be under `./dist/package.zip`.
+
+Make sure that the `version` field is bumped in these files:
+
+- `package.json` 
+- `public/manifest.json`
+
